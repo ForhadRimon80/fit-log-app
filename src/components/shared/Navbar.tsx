@@ -20,7 +20,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/about" className="text-gray-300">
+              <Link href="/myplan" className="text-gray-300">
                 My Plan
               </Link>
             </li>
@@ -38,7 +38,7 @@ const Navbar = () => {
           <Link href="/" className="rounded-full bg-[#1A2312] px-4 py-2 text-sm font-semibold text-[#C2F800]">
             Workouts
           </Link>
-          <Link href="/about" className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-white">
+          <Link href="/myplan" className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-white">
             My Plan
           </Link>
         </div>
