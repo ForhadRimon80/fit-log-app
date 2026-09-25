@@ -1,31 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HiOutlineBars3 } from "react-icons/hi2";
 import Logo from "@/assets/logo.png";
+import NavbarLink from "./NavbarLink";
+import MobileNavbarLink from "./MobileNavbarLink ";
+
 
 const Navbar = () => {
+
+
   return (
     <nav className="border-b border-white/10 bg-[#0C0D10]">
       <div className="container relative mx-auto flex h-16 items-center justify-between gap-2 px-3 sm:h-18 sm:px-6">
         {/* Hamburger: mobile & tablet */}
-        <div className="dropdown lg:hidden">
-          <div tabIndex={0} role="button" aria-label="Open navigation menu" className="btn btn-ghost btn-square text-white">
-            <HiOutlineBars3 className="text-2xl" />
-          </div>
-
-          <ul tabIndex={-1} className="menu dropdown-content z-50 mt-3 w-48 rounded-box border border-white/10 bg-[#1b1c1f] p-2 shadow-lg">
-            <li>
-              <Link href="/" className="text-[#C2F800]">
-                Workouts
-              </Link>
-            </li>
-            <li>
-              <Link href="/myplan" className="text-gray-300">
-                My Plan
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <MobileNavbarLink />
 
         {/* Logo */}
         <Link href="/" className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1.5 sm:gap-2 lg:static lg:translate-x-0">
@@ -34,14 +21,7 @@ const Navbar = () => {
         </Link>
 
         {/* Center links*/}
-        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
-          <Link href="/" className="rounded-full bg-[#1A2312] px-4 py-2 text-sm font-semibold text-[#C2F800]">
-            Workouts
-          </Link>
-          <Link href="/myplan" className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-white">
-            My Plan
-          </Link>
-        </div>
+        <NavbarLink />
 
         {/* Right side */}
         <div className="ml-auto flex shrink-0 items-center gap-2 text-xs sm:gap-5 sm:text-sm">
