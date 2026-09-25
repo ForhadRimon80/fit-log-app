@@ -1,4 +1,3 @@
-import { IWorkout } from "@/types/workout.type";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { FiBookmark, FiCalendar } from "react-icons/fi";
@@ -9,24 +8,16 @@ interface IWorkoutDetailPageProps {
   }>;
 }
 
-const getWorkoutDetails = async (): Promise<IWorkout[]> => {
-  const res = await fetch("https://api.abcz.workers.dev/api/fitlog", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch workout details");
-  }
-
-  return res.json();
-};
 
 const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
   const { workoutId } = await params;
-  const workoutData = await getWorkoutDetails();
 
-  const workout = workoutData.find((item) => String(item.id) === workoutId);
-
+  const res = await fetch(`https://api.abcz.workers.dev/api/fitlog/${workoutId}`, {cache: "no-store"});
+   if (!res.ok) {
+     throw new Error("Failed to fetch workout details");
+   }
+   
+  const workout = await res.json();
   if (!workout) {
     notFound();
   }
@@ -51,14 +42,14 @@ const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
 
         {/* Workout information */}
         <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold text-white uppercase sm:text-3xl lg:text-4xl">{workout.name}</h1>
+          <h1 className="text-2xl font-bold text-white uppercase sm:text-3xl lg:text-4xl">{workout.name}</h1>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-[#9CA3AF] sm:text-base">{workout.description}</p>
+          <p className="mt-3 max-w-xl text-sm text-[#9CA3AF] sm:text-base">{workout.description}</p>
 
           {/* Muscle groups */}
           <div className="mt-4 flex flex-wrap gap-2">
-            {workout.muscleGroups.map((muscle) => (
-              <span key={muscle} className="badge border-0 bg-[#C2F800] px-3 py-3 text-xs font-semibold text-black">
+            {workout.muscleGroups.map((muscle: string) => (
+              <span key={muscle} className="badge rounded-xl border-0 bg-[#C2F800] px-3 py-3 text-xs font-semibold text-black">
                 {muscle}
               </span>
             ))}
@@ -69,7 +60,7 @@ const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
             {workoutTableData.map(([label, value]) => (
               <div key={label} className="flex items-center justify-between gap-4 border-b border-white/5 px-4 py-3 text-sm last:border-b-0 sm:px-5">
                 <span className="text-xs font-bold text-[#9CA3AF]">{label}</span>
-                <span className="min-w-0 text-right text-white">{value}</span>
+                <span className="min-w-0 text-right text-[#E5E7EB]">{value}</span>
               </div>
             ))}
           </div>
@@ -78,8 +69,8 @@ const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
           <div className="mt-6">
             <h2 className="font-bold text-white">INSTRUCTIONS</h2>
 
-            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#C4C8D0]">
-              {workout.instructions.map((instruction, index) => (
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#D1D5DB]">
+              {workout.instructions.map((instruction: string, index: number) => (
                 <li key={index}>{instruction}</li>
               ))}
             </ol>
@@ -87,12 +78,12 @@ const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
 
           {/* Buttons */}
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <button type="button" className="btn w-full border-0 bg-[#C2F800] text-black hover:bg-[#a8d500] sm:w-auto">
+            <button type="button" className="rounded-xl font-semibold btn w-full border-0 bg-[#C2F800] text-[#0F1115] hover:bg-[#a8d500] sm:w-auto">
               <FiCalendar />
               Add to today&apos;s plan
             </button>
 
-            <button type="button" className="btn w-full border border-white/15 bg-transparent text-white hover:bg-white/10 sm:w-auto">
+            <button type="button" className="rounded-xl font-medium btn w-full border border-[#374151] bg-transparent text-[#E5E7EB] hover:bg-white/10 sm:w-auto">
               <FiBookmark />
               Save for later
             </button>
