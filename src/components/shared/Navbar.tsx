@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/assets/logo.png";
 import NavbarLink from "./NavbarLink";
-import MobileNavbarLink from "./MobileNavbarLink ";
+import NavbarCounts from "./NavbarCounts";
+import MobileNavbarLink from "./MobileNavbarLink";
 
 
 const Navbar = () => {
@@ -24,17 +25,7 @@ const Navbar = () => {
         <NavbarLink />
 
         {/* Right side */}
-        <div className="ml-auto flex shrink-0 items-center gap-2 text-xs sm:gap-5 sm:text-sm">
-          <Link href="/about" className="flex items-center gap-1 text-[#D1D5DB] sm:gap-2">
-            <span>Plan</span>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D9FF00] text-xs font-bold text-black">0</span>
-          </Link>
-
-          <Link href="/saved" className="flex items-center gap-1 text-[#9CA3AF] sm:gap-2">
-            <span>Saved</span>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-600 text-xs text-white">0</span>
-          </Link>
-        </div>
+        <NavbarCounts />
       </div>
     </nav>
   );

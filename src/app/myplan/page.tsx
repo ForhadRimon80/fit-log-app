@@ -16,12 +16,13 @@ interface IWorkoutDetailsButtonContextType {
 
 
 const MyPlanPage = () => {
-
+  //* Access the context values
   const { addToTodaysPlan, setAddToTodaysPlan, saveForLater, setSaveForLater } = useContext(WorkoutDetailsButtonContext) as IWorkoutDetailsButtonContextType;
 
+  //* State to track which workouts are marked as done
   const [doneIds, setDoneIds] = useState<number[]>([]);
   
-
+  //* Function to handle marking a workout as done or not done
   const handleMarkDone = (id: number) => {
     if (doneIds.includes(id)) {
       setDoneIds((previous) => previous.filter((doneId) => doneId !== id));
@@ -31,6 +32,8 @@ const MyPlanPage = () => {
       toast.success(`${workouts.find((w) => w.id === id)?.name} marked as done!`);
     }
   };
+
+  //* Function to handle removing a workout from the list
   const handleRemove = (id: number) => {
     if (activeTab === "plan") {
       setAddToTodaysPlan((previous) => previous.filter((workout) => workout.id !== id));
@@ -41,10 +44,11 @@ const MyPlanPage = () => {
     toast.success(`${workouts.find((w) => w.id === id)?.name} removed!`);
   };
 
+  //* State to manage active tab and sorting
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
   const [sortBy, setSortBy] = useState<"duration" | "calories" | "rating">("duration");
 
-
+  //* Function to sort workouts based on the selected criteria
   const sortWorkouts = (workouts: IWorkout[]) => {
     const sortedWorkouts = [...workouts];
     if (sortBy === "duration") {
@@ -57,9 +61,11 @@ const MyPlanPage = () => {
     return sortedWorkouts;
   };
 
+  //* Sort the workouts based on the selected criteria function called here.
   const sortedAddToTodaysPlan = sortWorkouts(addToTodaysPlan);
   const sortedSaveForLater = sortWorkouts(saveForLater);
 
+  //* Determine which workouts to display based on the active tab
   let workouts: IWorkout[] = [];
 
     if (activeTab === "plan") {
@@ -67,6 +73,13 @@ const MyPlanPage = () => {
     } else {
       workouts = sortedSaveForLater;
     }
+
+    //* Calculate statistics for the workouts
+    const exerciseCount = workouts.length;
+
+    const totalMinutes = workouts.reduce((total, workout) => total + workout.duration, 0);
+
+    const totalCalories = workouts.reduce((total, workout) => total + workout.caloriesBurned, 0);
 
   return (
     <div className="container mx-auto px-4 py-10 sm:px-6 lg:py-14">
@@ -78,17 +91,17 @@ const MyPlanPage = () => {
       <div className="mt-6 grid grid-cols-3 rounded-2xl border border-white/10 bg-[#1B1D22] px-4 py-6 sm:px-6 lg:mt-7">
         <div className="border-r border-white/10 pr-3">
           <p className="text-xs text-[#9CA3AF]">Exercises</p>
-          <p className="mt-1 text-3xl font-extrabold text-[#C2F800] sm:text-4xl">2</p>
+          <p className="mt-1 text-3xl font-extrabold text-[#C2F800] sm:text-4xl">{exerciseCount}</p>
         </div>
 
         <div className="border-r border-white/10 px-3 sm:px-6">
           <p className="text-xs text-[#9CA3AF]">Minutes</p>
-          <p className="mt-1 text-3xl font-extrabold text-white sm:text-4xl">23</p>
+          <p className="mt-1 text-3xl font-extrabold text-white sm:text-4xl">{totalMinutes}</p>
         </div>
 
         <div className="pl-3 sm:pl-6">
           <p className="text-xs text-[#9CA3AF]">Calories</p>
-          <p className="mt-1 text-3xl font-extrabold text-white sm:text-4xl">190</p>
+          <p className="mt-1 text-3xl font-extrabold text-white sm:text-4xl">{totalCalories}</p>
         </div>
       </div>
 
