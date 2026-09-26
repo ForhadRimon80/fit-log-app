@@ -1,11 +1,72 @@
 "use client";
-
+import MyPlanWorkoutCard from "@/components/card/MyPlanWorkoutCard";
+import { WorkoutDetailsButtonContext } from "@/context/WorkoutDetailsButtonContext";
+import { IWorkout } from "@/types/workout.type";
 import Link from "next/link";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { toast } from "react-toastify";
+
+
+interface IWorkoutDetailsButtonContextType {
+  addToTodaysPlan: IWorkout[];
+  setAddToTodaysPlan: Dispatch<SetStateAction<IWorkout[]>>;
+  saveForLater: IWorkout[];
+  setSaveForLater: Dispatch<SetStateAction<IWorkout[]>>;
+}
+
 
 const MyPlanPage = () => {
-  const [activeTab, setActiveTab] = useState<"plan" | "saved">("saved");
+
+  const { addToTodaysPlan, setAddToTodaysPlan, saveForLater, setSaveForLater } = useContext(WorkoutDetailsButtonContext) as IWorkoutDetailsButtonContextType;
+
+  const [doneIds, setDoneIds] = useState<number[]>([]);
+  
+
+  const handleMarkDone = (id: number) => {
+    if (doneIds.includes(id)) {
+      setDoneIds((previous) => previous.filter((doneId) => doneId !== id));
+      toast.info(`${workouts.find((w) => w.id === id)?.name} marked as not done.`);
+    } else {
+      setDoneIds((previous) => [...previous, id]);
+      toast.success(`${workouts.find((w) => w.id === id)?.name} marked as done!`);
+    }
+  };
+  const handleRemove = (id: number) => {
+    if (activeTab === "plan") {
+      setAddToTodaysPlan((previous) => previous.filter((workout) => workout.id !== id));
+    } else {
+      setSaveForLater((previous) => previous.filter((workout) => workout.id !== id));
+    }
+
+    toast.success(`${workouts.find((w) => w.id === id)?.name} removed!`);
+  };
+
+  const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
   const [sortBy, setSortBy] = useState<"duration" | "calories" | "rating">("duration");
+
+
+  const sortWorkouts = (workouts: IWorkout[]) => {
+    const sortedWorkouts = [...workouts];
+    if (sortBy === "duration") {
+      sortedWorkouts.sort((a, b) => b.duration - a.duration);
+    } else if (sortBy === "calories") {
+      sortedWorkouts.sort((a, b) => b.caloriesBurned - a.caloriesBurned);
+    } else if (sortBy === "rating") {
+      sortedWorkouts.sort((a, b) => b.rating - a.rating);
+    }
+    return sortedWorkouts;
+  };
+
+  const sortedAddToTodaysPlan = sortWorkouts(addToTodaysPlan);
+  const sortedSaveForLater = sortWorkouts(saveForLater);
+
+  let workouts: IWorkout[] = [];
+
+    if (activeTab === "plan") {
+      workouts = sortedAddToTodaysPlan;
+    } else {
+      workouts = sortedSaveForLater;
+    }
 
   return (
     <div className="container mx-auto px-4 py-10 sm:px-6 lg:py-14">
@@ -57,15 +118,23 @@ const MyPlanPage = () => {
       </div>
 
       {/* Empty state */}
-      <div className="mt-5 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-white/10 px-5 py-10 text-center sm:min-h-72">
-        <h2 className="text-xl font-extrabold text-white uppercase">NOTHING HERE YET</h2>
+      {workouts.length === 0 ? (
+        <div className="mt-5 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-white/10 px-5 py-10 text-center sm:min-h-72">
+          <h2 className="text-xl font-extrabold text-white uppercase">NOTHING HERE YET</h2>
 
-        <p className="mt-1 text-sm text-[#9CA3AF]">Browse the library and add a lift to get today moving.</p>
+          <p className="mt-1 text-sm text-[#9CA3AF]">Browse the library and add a lift to get today moving.</p>
 
-        <Link href="/" className="btn mt-5 rounded-full border-0 bg-[#C2F800] px-6 text-xs font-semibold text-black hover:bg-[#a8d500]">
-          Go to workouts
-        </Link>
-      </div>
+          <Link href="/" className="btn mt-5 rounded-full border-0 bg-[#C2F800] px-6 text-xs font-semibold text-black hover:bg-[#a8d500]">
+            Go to workouts
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-6 space-y-6">
+          {workouts.map((workout) => (
+            <MyPlanWorkoutCard key={workout.id} workout={workout} isDone={doneIds.includes(workout.id)} onMarkDone={handleMarkDone} onRemove={handleRemove} activeTab={activeTab}></MyPlanWorkoutCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

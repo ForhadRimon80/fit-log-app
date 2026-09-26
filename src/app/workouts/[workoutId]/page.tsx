@@ -1,6 +1,7 @@
+import AddToTodaysPlanButton from "@/components/workoutDetails/AddToTodaysPlanButton";
+import SaveForLaterButton from "@/components/workoutDetails/SaveForLaterButton";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { FiBookmark, FiCalendar } from "react-icons/fi";
 
 interface IWorkoutDetailPageProps {
   params: Promise<{
@@ -78,15 +79,8 @@ const WorkoutDetailsPage = async ({ params }: IWorkoutDetailPageProps) => {
 
           {/* Buttons */}
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <button type="button" className="rounded-xl font-semibold btn w-full border-0 bg-[#C2F800] text-[#0F1115] hover:bg-[#a8d500] sm:w-auto">
-              <FiCalendar />
-              Add to today&apos;s plan
-            </button>
-
-            <button type="button" className="rounded-xl font-medium btn w-full border border-[#374151] bg-transparent text-[#E5E7EB] hover:bg-white/10 sm:w-auto">
-              <FiBookmark />
-              Save for later
-            </button>
+            <AddToTodaysPlanButton workout={workout} />
+            <SaveForLaterButton workout={workout} />
           </div>
         </div>
       </div>

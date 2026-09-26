@@ -1,24 +1,41 @@
-'use client'
-import React, { ReactNode, useState } from 'react';
-import { createContext } from 'react';
+"use client";
 
-const WorkoutDetailsButtonContext = createContext({})
+import { IWorkout } from "@/types/workout.type";
+import { createContext, ReactNode, useEffect, useState } from "react";
+
+export const WorkoutDetailsButtonContext = createContext({});
 
 const WorkoutProvider = ({ children }: { children: ReactNode }) => {
+  const [addToTodaysPlan, setAddToTodaysPlan] = useState<IWorkout[]>(() => {
+    if (typeof window === "undefined") {
+        return [];
+    }
+    return JSON.parse(localStorage.getItem("todaysPlan") || "[]");
+  });
 
-    const [addToTodaysPlan, setAddToTodaysPlan] = useState([])
-    const [saveForLater, setSaveForLater] = useState([])
+  const [saveForLater, setSaveForLater] = useState<IWorkout[]>(() => {
+    if (typeof window === "undefined") {
+        return [];
+    } 
+    return JSON.parse(localStorage.getItem("savedWorkouts") || "[]");
+  });
 
-    const sharedState = {
+  useEffect(() => {
+    localStorage.setItem("todaysPlan", JSON.stringify(addToTodaysPlan));
+    localStorage.setItem("savedWorkouts", JSON.stringify(saveForLater));
+  }, [addToTodaysPlan, saveForLater]);
+
+  return (
+    <WorkoutDetailsButtonContext.Provider
+      value={{
         addToTodaysPlan,
         setAddToTodaysPlan,
         saveForLater,
-        setSaveForLater
-    }
-
-    return (
-        <WorkoutDetailsButtonContext.Provider value={sharedState}>{children}</WorkoutDetailsButtonContext.Provider>
-    );
+        setSaveForLater,
+      }}>
+      {children}
+    </WorkoutDetailsButtonContext.Provider>
+  );
 };
 
 export default WorkoutProvider;
