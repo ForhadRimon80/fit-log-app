@@ -3,6 +3,9 @@ import { IWorkout } from "@/types/workout.type";
 import WorkoutCardPage from "@/components/card/WorkoutCard";
 
 const getWorkouts = async () => {
+
+  await new Promise((resolve) => setTimeout(resolve, 200));
+
   const res = await fetch("https://api.abcz.workers.dev/api/fitlog", {
     cache: "force-cache",
   });
